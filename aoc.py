@@ -26,7 +26,7 @@ def get_example_inputs(day):
     print(url)
     r = requests.get(url, cookies=COOKIES)
     r.raise_for_status()
-    examples = [x.text for x in pq(r.text)('pre > code')]
+    examples = [x.text_content() for x in pq(r.text)('pre > code')]
     seen = set()
     return [x for x in examples if not (x in seen or seen.add(x))]
 
@@ -36,9 +36,11 @@ def submit_answer(day, level, answer):
     print(url, data)
     r = requests.post(url, cookies=COOKIES, data=data)
     r.raise_for_status()
-    result = [x.text for x in pq(r.text)('main > article > p')]
-    if len(result) == 1:
-        print(result[0])
+    ps = [x.text_content() for x in pq(r.text)('main > article > p')]
+    if ps:
+        for p in ps:
+            print(p)
+            print()
     else:
         print(r.text)
 
@@ -86,7 +88,8 @@ def main():
     fetch(day)
     answer = run(day)
     if answer:
-        level = input('Submit %r? [1/2] ' % answer)
+        level = input('>>> Submit %r? [1/2] ' % answer)
+        print()
         if level and level in '12':
             submit_answer(day, level, answer)
 

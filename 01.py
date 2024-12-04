@@ -1,20 +1,11 @@
-from collections import *
-from itertools import *
-from math import *
 import fileinput
 import re
 
-first = []
-second = []
-for line in fileinput.input():
-    line = line.rstrip()
-    numbers = list(map(int, re.findall(r'\d+', line)))
-    first.append(numbers[0])
-    second.append(numbers[1])
+rows = [tuple(map(int, re.findall(r'\d+', line)))
+    for line in fileinput.input()]
 
-first.sort()
-second.sort()
+A = list(sorted(x[0] for x in rows))
+B = list(sorted(x[1] for x in rows))
 
-print(sum(abs(a-b) for a, b in zip(first, second)))
-
-print(sum(a*second.count(a) for a in first))
+print(sum(abs(a - b) for a, b in zip(A, B)))
+print(sum(a * B.count(a) for a in A))

@@ -1,28 +1,14 @@
-from collections import *
-from itertools import *
-from math import *
 import fileinput
 import re
 
 def check(values):
-    deltas = [b-a for a, b in zip(values, values[1:])]
-    safe = True
-    if not (all([x < 0 for x in deltas]) or all([x > 0 for x in deltas])):
-        safe = False
-    if not all([abs(x) >= 1 and abs(x) <= 3 for x in deltas]):
-        safe = False
-    return safe
+    deltas = [b - a for a, b in zip(values, values[1:])]
+    return all(x >= 1 and x <= 3 for x in deltas) or all(x >= -3 and x <= -1 for x in deltas)
 
-def check_all(values):
-    if check(values):
-        return True
-    return any(check(values[:i] + values[i+1:]) for i in range(len(values)))
-
-total = 0
+part1 = part2 = 0
 for line in fileinput.input():
-    line = line.rstrip()
     values = list(map(int, line.split()))
-    safe = check_all(values)
-    if safe:
-        total += 1
-print(total)
+    part1 += check(values)
+    part2 += check(values) or any(check(values[:i] + values[i+1:]) for i in range(len(values)))
+print(part1)
+print(part2)
